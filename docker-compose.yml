@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  hoot-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.hoot
+    image: guile-hoot:latest
+    container_name: guile-hoot-dev
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: bash -c "echo 'Guile Hoot Development Environment' && guile --version && echo && echo 'Try: guild compile-wasm examples/hoot/fibonacci.scm' && bash"
+    stdin_open: true
+    tty: true
+
+  # Alternative: Use pre-built image if available
+  hoot-prebuild:
+    image: guile-hoot:latest
+    container_name: guile-hoot-prebuild
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: bash
+    stdin_open: true
+    tty: true

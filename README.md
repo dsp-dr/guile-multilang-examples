@@ -112,11 +112,34 @@ This launches tmux with Emacs configured for Scheme development using Geiser.
 
 ## Requirements
 
-- GNU Guile 2.2+ (3.0+ recommended for Hoot)
+- GNU Guile 2.2+ (3.0+ for basic features)
 - Git
-- Make
+- Make  
 - curl or wget
 - Optional: Emacs, tmux, GPG
+
+### For Hoot WASM Support
+
+**Important**: Hoot v0.6.0 has been successfully built and installed with Guile 3.0.10, though full functionality may require bleeding-edge Guile from main branch.
+
+#### Installation Status
+✅ **Successfully installed** at `/home/dsp-dr/.local/hoot-guile3/`
+- Built with system Guile 3.0.10
+- Some advanced features may require newer Guile
+- Basic compilation infrastructure in place
+
+#### To Use Installed Hoot
+```bash
+export PATH=/home/dsp-dr/.local/hoot-guile3/bin:$PATH
+export GUILE_LOAD_PATH=/home/dsp-dr/.local/hoot-guile3/share/guile/site/3.0:$GUILE_LOAD_PATH
+```
+
+#### Alternative: Docker Environment
+For guaranteed compatibility:
+```bash
+docker-compose build hoot-dev
+docker-compose run hoot-dev
+```
 
 ## License
 

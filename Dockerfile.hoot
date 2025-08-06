@@ -1,0 +1,88 @@
+# Dockerfile for Guile Hoot development environment
+# Builds bleeding-edge Guile and Hoot for WASM compilation
+
+FROM debian:bookworm-slim AS builder
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    autoconf \
+    automake \
+    libtool \
+    make \
+    gcc \
+    g++ \
+    git \
+    wget \
+    curl \
+    libgc-dev \
+    libffi-dev \
+    libunistring-dev \
+    libgmp-dev \
+    libltdl-dev \
+    libreadline-dev \
+    libncurses5-dev \
+    pkg-config \
+    texinfo \
+    flex \
+    gettext \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clone and build Guile from main branch
+WORKDIR /build
+RUN git clone --depth 1 https://git.savannah.gnu.org/git/guile.git guile-next && \
+    cd guile-next && \
+    ./autogen.sh && \
+    ./configure --prefix=/usr/local \
+                --enable-mini-gmp \
+                --disable-deprecated \
+                --disable-nls && \
+    make -j$(nproc) && \
+    make install && \
+    ldconfig
+
+# Clone and build Hoot
+RUN git clone --depth 1 https://gitlab.com/spritely/guile-hoot.git && \
+    cd guile-hoot && \
+    ./bootstrap && \
+    ./configure --prefix=/usr/local && \
+    make && \
+    make install
+
+# Create runtime image
+FROM debian:bookworm-slim
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    libgc1 \
+    libffi8 \
+    libunistring2 \
+    libgmp10 \
+    libltdl7 \
+    libreadline8 \
+    libncurses6 \
+    git \
+    make \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy built Guile and Hoot from builder
+COPY --from=builder /usr/local /usr/local
+
+# Set up environment
+ENV PATH="/usr/local/bin:${PATH}"
+ENV GUILE_LOAD_PATH="/usr/local/share/guile/site/3.0:${GUILE_LOAD_PATH}"
+ENV GUILE_LOAD_COMPILED_PATH="/usr/local/lib/guile/3.0/site-ccache:${GUILE_LOAD_COMPILED_PATH}"
+ENV LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH}"
+
+# Create working directory
+WORKDIR /workspace
+
+# Verify installation
+RUN ldconfig && \
+    guile --version && \
+    guild --version && \
+    echo "(display (version))" | guile
+
+# Set entrypoint
+ENTRYPOINT ["/bin/bash"]
