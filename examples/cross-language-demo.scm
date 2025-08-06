@@ -40,13 +40,12 @@
   
   ;; Test 1: Dynamic function definition and calling
   (format #t "1. Dynamic Elisp function definition:~%")
-  (let ((elisp-factorial 
-         (compile-and-run-elisp 
-          '(defun elisp-factorial (n)
-             (if (<= n 1) 1 (* n (elisp-factorial (- n 1))))))))
-    (when elisp-factorial
-      (format #t "   Elisp factorial(5): ~a~%" (elisp-factorial 5))
-      (format #t "   Scheme factorial(5): ~a~%" (scheme-factorial 5))))
+  (compile-and-run-elisp 
+   '(defun elisp-factorial (n)
+      (if (<= n 1) 1 (* n (elisp-factorial (- n 1))))))
+  (let ((result (compile-and-run-elisp '(elisp-factorial 5))))
+    (format #t "   Elisp factorial(5): ~a~%" result)
+    (format #t "   Scheme factorial(5): ~a~%" (scheme-factorial 5)))
   
   ;; Test 2: List processing comparison
   (format #t "~%2. List processing paradigms:~%")

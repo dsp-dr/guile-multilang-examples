@@ -62,6 +62,8 @@ geiser-build:
 
 hoot-install:
 	@echo "Installing Hoot locally from git..."
+	@echo "NOTE: Hoot requires bleeding-edge Guile from main branch!"
+	@echo "      You may need to run 'make guile-next' first"
 	@if [ ! -d "vendor/guile-hoot" ]; then \
 		mkdir -p vendor && \
 		echo "Cloning Hoot repository..." && \
@@ -82,6 +84,25 @@ hoot-install:
 	@echo "✓ Hoot installed to ~/.local"
 	@echo "  Add to PATH: export PATH=$$HOME/.local/bin:$$PATH"
 	@echo "  Add to GUILE_LOAD_PATH: export GUILE_LOAD_PATH=$$HOME/.local/share/guile/site/3.0:$$GUILE_LOAD_PATH"
+
+guile-next:
+	@echo "Building bleeding-edge Guile from main branch (required for Hoot)..."
+	@if [ ! -d "vendor/guile-next" ]; then \
+		mkdir -p vendor && \
+		echo "Cloning Guile repository..." && \
+		git clone https://git.savannah.gnu.org/git/guile.git vendor/guile-next; \
+	else \
+		echo "Updating Guile repository..." && \
+		cd vendor/guile-next && git pull; \
+	fi
+	@echo "Building Guile..."
+	cd vendor/guile-next && \
+		./autogen.sh && \
+		./configure --prefix=$${HOME}/.local/guile-next && \
+		make -j$$(nproc) && \
+		make install
+	@echo "✓ Guile-next installed to ~/.local/guile-next"
+	@echo "  To use: export PATH=$$HOME/.local/guile-next/bin:$$PATH"
 
 hoot-build:
 	@echo "Building Hoot..."

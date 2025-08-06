@@ -7,3 +7,6 @@
 [submodule "submodules/emacs"]
 	path = submodules/emacs
 	url = https://git.savannah.gnu.org/git/emacs.git
+[submodule "elisp/submodules/geiser-guile"]
+	path = elisp/submodules/geiser-guile
+	url = https://gitlab.com/emacs-geiser/guile.git
