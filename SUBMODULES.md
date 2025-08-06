@@ -83,7 +83,24 @@ guile -L submodules/guile-ares-rs/modules \
 3. Compile to WASM with Hoot (when available)
 4. Test Elisp integration with included examples
 
+## Debugging Tools
+
+### GDB Init (`submodules/gdb-init`)
+- **Source**: https://github.com/gdbinit/Gdbinit.git
+- **Purpose**: Enhanced GDB initialization and configuration
+- **Features**: Better formatting, colored output, enhanced commands
+
+### GDB Dashboard (`submodules/gdb-dashboard`)
+- **Source**: https://github.com/cyrus-and/gdb-dashboard.git
+- **Purpose**: Modern dashboard interface for GDB
+- **Features**: 
+  - Python-based modular interface
+  - Real-time source code view
+  - Register and memory visualization
+  - Stack frame navigation
+
 ## Notes
 - All submodules are in active development
 - Some features require bleeding-edge Guile versions
 - Integration examples demonstrate cross-language capabilities
+- GDB tools enhance debugging of compiled Guile code
