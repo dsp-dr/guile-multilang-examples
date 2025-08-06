@@ -20,7 +20,9 @@ docs/*.sig
 # Development
 .envrc.local
 .dir-locals.el
+.emacs.d
 
 # OS files
 .DS_Store
 Thumbs.db
+

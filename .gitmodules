@@ -22,3 +22,9 @@
 [submodule "submodules/gdb"]
 	path = submodules/gdb
 	url = https://sourceware.org/git/binutils-gdb.git
+[submodule "submodules/forge"]
+	path = submodules/forge
+	url = https://github.com/magit/forge.git
+[submodule "submodules/claude-code-ide"]
+	path = submodules/claude-code-ide
+	url = https://github.com/manzaltu/claude-code-ide.el.git

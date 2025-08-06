@@ -86,28 +86,63 @@ Shows:
 
 ## Development
 
-Start a configured development environment:
+### Emacs Integration
+
+Launch a fully configured Emacs development environment with:
+
+```bash
+# One-time setup
+./setup-emacs-integrations.sh
+
+# Launch configured Emacs
+./emacs-launch.sh
+```
+
+**Features:**
+- **Geiser**: Interactive Scheme REPL and development
+- **Magit Forge**: GitHub/GitLab integration for issues and PRs
+- **Claude Code IDE**: AI-powered code assistance and explanation
+- **Project Commands**: Custom keybindings for multilang demos
+
+**Key Bindings:**
+- `C-c g e` - Run Elisp compilation example
+- `C-c g c` - Run cross-language demonstration  
+- `C-c g b` - Run Brainfuck demo
+- `C-c c e` - Claude explain code
+- `C-c g i` - Create GitHub issue via Forge
+
+See `EMACS_INTEGRATION.md` for complete setup guide.
+
+### Alternative Development Environment
 
 ```bash
 make dev-env
 ```
 
-This launches tmux with Emacs configured for Scheme development using Geiser.
+This launches tmux with basic Emacs configured for Scheme development.
 
 ## Project Structure
 
 ```
 .
+├── .emacs.d/           # Emacs configuration with integrations
 ├── elisp/              # Elisp compilation examples
 ├── examples/           
 │   ├── hoot/          # WASM compilation examples
 │   ├── cross-language-demo.scm
 │   └── performance-comparison.scm
 ├── submodules/        # Git submodules
-│   ├── guile/        # GNU Guile source
-│   └── geiser/       # Geiser IDE support
+│   ├── guile/         # GNU Guile source
+│   ├── geiser/        # Geiser IDE support  
+│   ├── forge/         # Magit Forge GitHub/GitLab integration
+│   ├── claude-code-ide/ # Claude AI code assistant
+│   ├── gdb*/          # GDB debugging tools
+│   └── guile-ares-rs/ # nREPL server for Guile
 ├── vendor/            # Local installations (Hoot)
-└── docs/              # Downloaded documentation
+├── docs/              # Downloaded documentation
+├── setup-emacs-integrations.sh  # Setup script
+├── emacs-launch.sh    # Configured Emacs launcher
+└── EMACS_INTEGRATION.md # Integration guide
 ```
 
 ## Requirements

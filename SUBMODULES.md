@@ -99,8 +99,54 @@ guile -L submodules/guile-ares-rs/modules \
   - Register and memory visualization
   - Stack frame navigation
 
+### GNU Debugger Full Source (`submodules/gdb`)
+- **Source**: https://sourceware.org/git/binutils-gdb.git
+- **Purpose**: Complete GDB source for custom builds
+- **Features**: Latest GDB features, custom compilation support
+
+## Development Environment Integrations
+
+### Magit Forge (`submodules/forge`)
+- **Source**: https://github.com/magit/forge.git
+- **Purpose**: GitHub/GitLab integration for Emacs
+- **Features**:
+  - Issue tracking and management
+  - Pull request creation and review
+  - Repository browsing and administration
+  - Integration with Magit workflows
+  - Support for GitHub, GitLab, Codeberg, SourceHut
+
+### Claude Code IDE (`submodules/claude-code-ide`)
+- **Source**: https://github.com/manzaltu/claude-code-ide.el.git
+- **Purpose**: AI-powered code assistance for Emacs
+- **Features**:
+  - Code explanation and documentation
+  - Intelligent refactoring suggestions
+  - Code generation from natural language
+  - Context-aware programming assistance
+  - Integration with Claude AI models
+
+## Integration Workflow
+
+### Combined Development Environment
+```bash
+# Setup all integrations
+./setup-emacs-integrations.sh
+
+# Launch configured Emacs
+./emacs-launch.sh
+```
+
+### Available Commands
+- **Guile Development**: `C-c g r` (REPL), `C-c g e` (examples)
+- **Git Integration**: `C-c g i` (issues), `C-c g p` (pull requests)
+- **AI Assistance**: `C-c c e` (explain), `C-c c r` (refactor)
+- **Debugging**: GDB integration with enhanced interfaces
+
 ## Notes
 - All submodules are in active development
 - Some features require bleeding-edge Guile versions
 - Integration examples demonstrate cross-language capabilities
 - GDB tools enhance debugging of compiled Guile code
+- Emacs integrations provide comprehensive development workflow
+- AI assistance helps with complex Scheme and multilang development
