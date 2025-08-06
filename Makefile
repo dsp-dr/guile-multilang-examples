@@ -1,5 +1,5 @@
-.PHONY: all clean test help
-.PHONY: guile-build geiser-build hoot-build  
+.PHONY: all clean test help docs
+.PHONY: guile-build geiser-build hoot-build hoot-install
 .PHONY: elisp-example hoot-example cross-lang-demo
 .PHONY: setup update-submodules dev-env
 
@@ -13,19 +13,31 @@ all: setup elisp-example hoot-example
 
 help:
 	@echo "Guile Multilang Examples - Available targets:"
-	@echo "  make setup           - Initialize and update all submodules"
+	@echo ""
+	@echo "Setup & Build:"
+	@echo "  make setup             - Initialize and update all submodules"
 	@echo "  make update-submodules - Update all submodules to latest"
-	@echo "  make guile-build     - Build Guile from source (requires autotools)"
-	@echo "  make geiser-build    - Build/compile Geiser"
-	@echo "  make hoot-build      - Build Hoot WASM compiler"
-	@echo "  make elisp-example   - Run Elisp compilation example"
-	@echo "  make hoot-example    - Run Hoot WASM compilation example"
-	@echo "  make cross-lang-demo - Run cross-language interop demonstration"  
-	@echo "  make test            - Run all examples and tests"
-	@echo "  make validate-elisp  - Validate Elisp compilation without Emacs"
-	@echo "  make benchmark       - Run performance comparisons"
-	@echo "  make dev-env         - Start development environment with tmux + Emacs"
-	@echo "  make clean           - Clean build artifacts"
+	@echo "  make guile-build       - Build Guile from source (requires autotools)"
+	@echo "  make geiser-build      - Build/compile Geiser"
+	@echo "  make hoot-install      - Clone and install Hoot locally"
+	@echo "  make hoot-build        - Build Hoot WASM compiler (after hoot-install)"
+	@echo ""
+	@echo "Examples & Tests:"
+	@echo "  make elisp-example     - Run Elisp compilation example"
+	@echo "  make hoot-example      - Run Hoot WASM compilation example"
+	@echo "  make cross-lang-demo   - Run cross-language interop demonstration"  
+	@echo "  make test              - Run all examples and tests"
+	@echo "  make validate-elisp    - Validate Elisp compilation without Emacs"
+	@echo "  make benchmark         - Run performance comparisons"
+	@echo ""
+	@echo "Documentation:"
+	@echo "  make docs              - Download all documentation"
+	@echo "  make docs/r7rs.pdf     - Download R7RS specification"
+	@echo "  make docs/geiser-0.10.pdf - Download Geiser manual (with GPG verification)"
+	@echo ""
+	@echo "Development:"
+	@echo "  make dev-env           - Start development environment with tmux + Emacs"
+	@echo "  make clean             - Clean build artifacts"
 
 setup:
 	git submodule init
@@ -47,6 +59,29 @@ geiser-build:
 	@echo "Building Geiser..."
 	cd submodules/geiser && \
 		make
+
+hoot-install:
+	@echo "Installing Hoot locally from git..."
+	@if [ ! -d "vendor/guile-hoot" ]; then \
+		mkdir -p vendor && \
+		echo "Cloning Hoot repository..." && \
+		git clone https://gitlab.com/spritely/guile-hoot.git vendor/guile-hoot || \
+		git clone https://github.com/spritely/guile-hoot.git vendor/guile-hoot 2>/dev/null || \
+		(echo "Failed to clone Hoot. Try manually:" && \
+		 echo "  git clone https://gitlab.com/spritely/guile-hoot.git vendor/guile-hoot" && \
+		 exit 1); \
+	else \
+		echo "Hoot already cloned in vendor/guile-hoot"; \
+	fi
+	@echo "Building Hoot..."
+	cd vendor/guile-hoot && \
+		./bootstrap && \
+		./configure --prefix=$${HOME}/.local && \
+		make && \
+		make install
+	@echo "✓ Hoot installed to ~/.local"
+	@echo "  Add to PATH: export PATH=$$HOME/.local/bin:$$PATH"
+	@echo "  Add to GUILE_LOAD_PATH: export GUILE_LOAD_PATH=$$HOME/.local/share/guile/site/3.0:$$GUILE_LOAD_PATH"
 
 hoot-build:
 	@echo "Building Hoot..."
@@ -105,6 +140,24 @@ benchmark:
 	@if [ -f examples/hoot/build/fibonacci.wasm ]; then \
 		echo "WASM module size: $$(du -h examples/hoot/build/fibonacci.wasm)"; \
 	fi
+
+docs: docs/r7rs.pdf docs/geiser-0.10.pdf
+	@echo ""
+	@echo "✓ All documentation downloaded:"
+	@ls -lh docs/*.pdf
+
+docs/r7rs.pdf:
+	@mkdir -p docs
+	@echo "Downloading R7RS Small Language Specification..."
+	@if command -v wget >/dev/null 2>&1; then \
+		wget -q -O docs/r7rs.pdf https://small.r7rs.org/attachment/r7rs.pdf || \
+		curl -sL -o docs/r7rs.pdf https://small.r7rs.org/attachment/r7rs.pdf; \
+	else \
+		curl -sL -o docs/r7rs.pdf https://small.r7rs.org/attachment/r7rs.pdf; \
+	fi
+	@echo "✓ R7RS specification downloaded successfully"
+	@echo "  Location: docs/r7rs.pdf"
+	@echo "  Official source: https://small.r7rs.org/"
 
 docs/geiser-0.10.pdf: docs/geiser-0.10.pdf.sig
 	@echo "Geiser manual verified successfully"

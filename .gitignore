@@ -1,0 +1,25 @@
+# Compiled files
+*.go
+*.wasm
+*.elc
+
+# Backup files
+*~
+\#*\#
+.#*
+
+# Build directories
+build/
+vendor/
+
+# Documentation (downloaded)
+docs/*.pdf
+docs/*.sig
+
+# Development
+.envrc.local
+.dir-locals.el
+
+# OS files
+.DS_Store
+Thumbs.db
