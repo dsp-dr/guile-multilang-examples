@@ -1,0 +1,6 @@
+[submodule "submodules/guile"]
+	path = submodules/guile
+	url = https://git.savannah.gnu.org/git/guile.git
+[submodule "submodules/geiser"]
+	path = submodules/geiser
+	url = https://gitlab.com/emacs-geiser/geiser.git
