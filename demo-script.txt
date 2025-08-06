@@ -1,0 +1,66 @@
+# Guile Multilanguage Demo Script
+# This script demonstrates the step-by-step commands for the asciinema recording
+
+# 1. Clear screen and show welcome
+clear
+echo "🎯 Guile Multilanguage Examples Demo"
+echo "===================================="
+echo "System: FreeBSD 14.3 | Guile: $(guile3 --version | head -1)"
+echo ""
+
+# 2. Start Guile3 REPL
+echo "Starting Guile 3 REPL..."
+guile3
+
+# 3. In REPL - Basic Scheme operations
+(display "=== SCHEME (NATIVE) DEMO ===\n")
+(+ 10 20 30)
+(map (lambda (x) (* x x)) '(1 2 3 4 5))
+(apply + (map (lambda (x) (* x x)) '(1 2 3 4 5)))
+
+# 4. In REPL - Elisp compilation demo
+(display "\n=== ELISP COMPILATION DEMO ===\n")
+(use-modules (system base compile))
+(compile '(+ 5 10 15) #:from 'elisp #:to 'value)
+(compile '(defun square (x) (* x x)) #:from 'elisp #:to 'value)
+(compile '(square 8) #:from 'elisp #:to 'value)
+(compile '(mapcar (lambda (n) (* n 2)) '(1 2 3 4 5)) #:from 'elisp #:to 'value)
+
+# 5. In REPL - Show compilation stages
+(display "\n=== COMPILATION PIPELINE ===\n")
+(compile '(+ (* 2 3) (* 4 5)) #:from 'elisp #:to 'tree-il)
+(compile '(+ (* 2 3) (* 4 5)) #:from 'elisp #:to 'value)
+
+# 6. In REPL - Cross-language comparison
+(display "\n=== CROSS-LANGUAGE COMPARISON ===\n")
+(define scheme-result (+ 1 2 3 4 5))
+(define elisp-result (compile '(+ 1 2 3 4 5) #:from 'elisp #:to 'value))
+(display "Scheme: ") (display scheme-result) (newline)
+(display "Elisp:  ") (display elisp-result) (newline)
+(display "Match:  ") (display (= scheme-result elisp-result)) (newline)
+
+# 7. Exit REPL
+,quit
+
+# 8. Show Brainfuck demo outside REPL
+echo ""
+echo "=== BRAINFUCK DEMO ==="
+echo -n "Hello: "
+echo "++++++++[>++++++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>." | guile3 --language=brainfuck /dev/stdin
+echo ""
+echo -n "Simple char: "
+echo "++++++++[>+++++++++<-]>+." | guile3 --language=brainfuck /dev/stdin
+echo ""
+
+# 9. Show project structure
+echo ""
+echo "=== PROJECT STRUCTURE ==="
+ls -la *.scm *.sh
+echo ""
+echo "Submodules:"
+git submodule status | head -5
+
+# 10. Final message
+echo ""
+echo "🎉 Demo complete! All languages working on FreeBSD 14.3"
+echo "Repository: https://github.com/dsp-dr/guile-multilang-examples"

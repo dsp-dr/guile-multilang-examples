@@ -229,3 +229,18 @@ clean:
 	find . -name "*.go" -delete
 	find . -name "*~" -delete
 	find . -name "*.wasm" -delete
+# Emacs integration targets
+.PHONY: setup-emacs emacs-dev emacs-packages
+
+setup-emacs:
+	@echo "Setting up Emacs integrations..."
+	./setup-emacs-integrations.sh
+
+emacs-dev:
+	@echo "Launching Emacs development environment..."
+	./emacs-launch.sh
+
+emacs-packages:
+	@echo "Installing Emacs packages..."
+	emacs --batch --load .emacs.d/init.el --eval "(package-install-selected-packages)"
+
