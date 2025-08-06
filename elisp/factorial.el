@@ -3,18 +3,26 @@
 ;; This file demonstrates Elisp code that can be compiled and run on Guile 3
 
 (defun factorial (n)
-  "Calculate factorial of N recursively."
-  (if (<= n 1)
-      1
-    (* n (factorial (- n 1)))))
+  "Calculate factorial of N recursively.
+Throws error for negative inputs, returns 1 for 0 and 1."
+  (cond
+   ((not (integerp n)) (error "Input must be an integer"))
+   ((< n 0) (error "Factorial not defined for negative numbers"))
+   ((<= n 1) 1)
+   (t (* n (factorial (- n 1))))))
 
 (defun factorial-iter (n)
   "Calculate factorial of N iteratively."
-  (let ((result 1))
-    (while (> n 1)
-      (setq result (* result n))
-      (setq n (- n 1)))
-    result))
+  (cond
+   ((not (integerp n)) (error "Input must be an integer"))
+   ((< n 0) (error "Factorial not defined for negative numbers"))
+   ((<= n 1) 1)
+   (t (let ((result 1)
+            (counter n))
+        (while (> counter 1)
+          (setq result (* result counter))
+          (setq counter (- counter 1)))
+        result))))
 
 ;; List operations
 (defvar test-list '(1 2 3 4 5 6 7 8 9 10)
@@ -30,7 +38,11 @@
 
 (defun filter-even (lst)
   "Filter even numbers from LST."
-  (seq-filter (lambda (x) (= (mod x 2) 0)) lst))
+  ;; Use a more portable approach since seq-filter may not be available in Guile's elisp
+  (let (result)
+    (dolist (x lst (reverse result))
+      (when (= (mod x 2) 0)
+        (push x result)))))
 
 ;; String operations
 (defun reverse-string (str)

@@ -29,8 +29,13 @@
   
   ;; Test 1: Simple function
   (format #t "Test 1: Simple addition function~%")
-  (let ((add-fn (compile-elisp-string '(defun add (a b) (+ a b)))))
-    (format #t "Result: add(3, 4) = ~a~%~%" (add-fn 3 4)))
+  (catch #t
+    (lambda ()
+      (compile-elisp-string '(defun add (a b) (+ a b)))
+      (let ((result (compile-elisp-string '(add 3 4))))
+        (format #t "Result: add(3, 4) = ~a~%~%" result)))
+    (lambda (key . args)
+      (format #t "ERROR in test 1: ~a ~a~%~%" key args)))
   
   ;; Test 2: List operations
   (format #t "Test 2: List operations~%")
@@ -40,9 +45,9 @@
   
   ;; Test 3: Conditional logic
   (format #t "Test 3: Conditional logic~%")
-  (let ((max-fn (compile-elisp-string 
-                 '(defun my-max (a b) (if (> a b) a b)))))
-    (format #t "max(10, 25) = ~a~%~%" (max-fn 10 25)))
+  (compile-elisp-string '(defun my-max (a b) (if (> a b) a b)))
+  (let ((result (compile-elisp-string '(my-max 10 25))))
+    (format #t "max(10, 25) = ~a~%~%" result))
   
   ;; Test 4: String manipulation
   (format #t "Test 4: String manipulation~%")

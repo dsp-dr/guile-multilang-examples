@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guile Hoot WASM Examples</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .example {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f7f7f7;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        #output {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Guile Hoot WebAssembly Examples</h1>
+        
+        <div class="example">
+            <h2>Fibonacci Calculator</h2>
+            <div class="controls">
+                <input type="number" id="fibInput" value="10" min="0" max="40">
+                <button onclick="calculateFibonacci()">Calculate</button>
+                <button onclick="showFibonacciList()">Show List</button>
+            </div>
+        </div>
+
+        <div class="example">
+            <h2>Interactive Counter</h2>
+            <div id="counter-container"></div>
+        </div>
+
+        <div class="example">
+            <h2>Console Output</h2>
+            <div id="output"></div>
+            <button onclick="clearOutput()">Clear</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Initialize Hoot runtime
+        import { init, WASM } from './hoot-runtime.js';
+        
+        let hootModule;
+        const output = document.getElementById('output');
+        
+        function log(text) {
+            output.textContent += text + '\n';
+        }
+        
+        window.clearOutput = function() {
+            output.textContent = '';
+        };
+        
+        window.calculateFibonacci = async function() {
+            const n = parseInt(document.getElementById('fibInput').value);
+            if (hootModule && hootModule.exports.fib_iter) {
+                const result = hootModule.exports.fib_iter(n);
+                log(`Fibonacci(${n}) = ${result}`);
+            } else {
+                log('Fibonacci module not loaded yet');
+            }
+        };
+        
+        window.showFibonacciList = async function() {
+            const n = parseInt(document.getElementById('fibInput').value);
+            if (hootModule && hootModule.exports.fib_list) {
+                const result = hootModule.exports.fib_list(n);
+                log(`First ${n+1} Fibonacci numbers: ${result}`);
+            } else {
+                log('Fibonacci module not loaded yet');
+            }
+        };
+        
+        // Load WASM modules
+        async function loadModules() {
+            try {
+                log('Loading Hoot WASM modules...');
+                
+                // Load Fibonacci module
+                const fibResponse = await fetch('./fibonacci.wasm');
+                const fibBytes = await fibResponse.arrayBuffer();
+                hootModule = await WebAssembly.instantiate(fibBytes, {
+                    env: {
+                        display: (str) => log(str),
+                        error: (str) => console.error(str)
+                    }
+                });
+                
+                log('✓ Fibonacci module loaded');
+                
+                // Load DOM interaction module if available
+                try {
+                    const domResponse = await fetch('./dom-interaction.wasm');
+                    const domBytes = await domResponse.arrayBuffer();
+                    const domModule = await WebAssembly.instantiate(domBytes, {
+                        env: {
+                            document: document,
+                            display: (str) => log(str)
+                        }
+                    });
+                    log('✓ DOM interaction module loaded');
+                } catch (e) {
+                    log('⚠ DOM module not available (compile with make hoot-example)');
+                }
+                
+                log('\nReady! Try the controls above.');
+            } catch (error) {
+                log(`Error loading modules: ${error.message}`);
+                log('Run "make hoot-example" to compile the WASM modules');
+            }
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', loadModules);
+    </script>
+</body>
+</html>
