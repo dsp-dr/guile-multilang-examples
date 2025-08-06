@@ -10,3 +10,6 @@
 [submodule "submodules/geiser-guile"]
 	path = submodules/geiser-guile
 	url = https://gitlab.com/emacs-geiser/guile.git
+[submodule "submodules/guile-ares-rs"]
+	path = submodules/guile-ares-rs
+	url = https://git.sr.ht/~abcdw/guile-ares-rs
