@@ -11,6 +11,7 @@
 # Build directories
 build/
 vendor/
+!vendor/.gitkeep
 
 # Documentation (downloaded)
 docs/*.pdf
