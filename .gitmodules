@@ -28,3 +28,6 @@
 [submodule "submodules/claude-code-ide"]
 	path = submodules/claude-code-ide
 	url = https://github.com/manzaltu/claude-code-ide.el.git
+[submodule "submodules/schism"]
+	path = submodules/schism
+	url = https://github.com/schism-lang/schism.git
