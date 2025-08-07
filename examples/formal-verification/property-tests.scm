@@ -3,6 +3,13 @@
 ;;; Property-Based Testing for Multilanguage Compilation
 ;;; Inspired by dsp.defrecord.com's formal verification approaches
 
+;; Add main guard to ensure execution when run as script
+(define-syntax when-main
+  (syntax-rules ()
+    ((when-main body ...)
+     (when (equal? (car (command-line)) (car (program-arguments)))
+       body ...))))
+
 (use-modules (srfi srfi-1)     ; List operations
              (srfi srfi-27)    ; Random numbers
              (srfi srfi-64)    ; Testing framework
@@ -11,28 +18,28 @@
 ;; Initialize random source
 (define *rng* (make-random-source))
 (random-source-randomize! *rng*)
-(define random (random-source-make-reals *rng*))
-(define random-integer (random-source-make-integers *rng*))
+(define random-real (random-source-make-reals *rng*))
+(define random-int (random-source-make-integers *rng*))
 
 ;;; Generator functions for test data
 
-(define (gen-integer #:min (min -1000) #:max (max 1000))
+(define* (gen-integer #:key (min -1000) (max 1000))
   "Generate a random integer in range"
-  (+ min (random-integer (- max min))))
+  (+ min (random-int (- max min))))
 
-(define (gen-list gen-element #:length (length #f))
+(define* (gen-list gen-element #:key (length #f))
   "Generate a list of random elements"
-  (let ((len (or length (random-integer 10))))
+  (let ((len (or length (random-int 10))))
     (map (lambda (_) (gen-element)) (iota len))))
 
 (define (gen-elisp-arithmetic)
   "Generate random Elisp arithmetic expressions"
   (define ops '(+ - *))
   (define (gen-expr depth)
-    (if (or (zero? depth) (< (random 1.0) 0.3))
+    (if (or (zero? depth) (< (random-real) 0.3))
         (gen-integer)
-        (let ((op (list-ref ops (random-integer (length ops))))
-              (n-args (+ 2 (random-integer 3))))
+        (let ((op (list-ref ops (random-int (length ops))))
+              (n-args (+ 2 (random-int 3))))
           (cons op (map (lambda (_) (gen-expr (- depth 1))) 
                        (iota n-args))))))
   (gen-expr 3))
@@ -205,5 +212,10 @@
     (every cdr results)))
 
 ;; Run if executed directly
-(when (equal? (car (command-line)) "property-tests.scm")
+(define (main)
   (run-all-properties))
+
+;; Check if script is being run directly
+(when (or (string-suffix? "property-tests.scm" (car (command-line)))
+          (equal? (length (command-line)) 1))
+  (main))
