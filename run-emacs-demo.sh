@@ -12,8 +12,8 @@ echo ""
 # Set up Guile environment
 export GUILE_LOAD_PATH="$SCRIPT_DIR/submodules/guile-ares-rs/modules:$GUILE_LOAD_PATH"
 
-# Launch Emacs with demo script
-emacs --init-directory="$EMACS_USER_DIRECTORY" \
+# Launch Emacs with demo script (use -nw for terminal mode)
+emacs -nw --init-directory="$EMACS_USER_DIRECTORY" \
       --load="$SCRIPT_DIR/emacs-demo-script.el" \
       --eval="(sit-for 3)" \
       --eval="(message \"Demo ready for interaction...\")" \

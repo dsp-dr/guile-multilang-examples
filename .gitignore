@@ -26,3 +26,4 @@ docs/*.sig
 .DS_Store
 Thumbs.db
 
+node.core

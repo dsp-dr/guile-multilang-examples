@@ -6,8 +6,8 @@
 # Project configuration
 PROJECT_NAME := guile-multilang-examples
 PROJECT_ROOT := $(shell pwd)
-GUILE := guile
-GUILD := guild
+GUILE := guile3
+GUILD := guild3
 
 all: setup elisp-example hoot-example
 

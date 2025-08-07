@@ -1,5 +1,5 @@
 #!/bin/sh
-# Run all Guile multilang examples with both Guile 2.2 and 3.0
+# Run all Guile multilang examples with Guile 3.0
 
 set -e
 
@@ -10,40 +10,40 @@ echo ""
 
 # Check Guile versions
 echo "=== Checking Guile Versions ==="
-if command -v guile >/dev/null 2>&1; then
-    echo -n "Guile 2.2: "
-    guile --version | head -1
-fi
-
 if command -v guile3 >/dev/null 2>&1; then
     echo -n "Guile 3.0: "
     guile3 --version | head -1
+fi
+
+if command -v guile >/dev/null 2>&1; then
+    echo -n "Guile (fallback): "
+    guile --version | head -1
 fi
 echo ""
 
 # Run Elisp tests
 echo "=== Elisp Compilation Tests ==="
-echo "Testing with Guile 2.2:"
-cd elisp && guile compile-elisp.scm --test 2>/dev/null || echo "Failed"
+echo "Testing with Guile 3.0:"
+cd elisp && guile3 compile-elisp.scm --test 2>/dev/null || echo "Failed"
 cd ..
 echo ""
 
-if command -v guile3 >/dev/null 2>&1; then
-    echo "Testing with Guile 3.0:"
-    guile3 elisp/compile-elisp.scm --test 2>/dev/null || echo "Failed"
+if command -v guile >/dev/null 2>&1 && [ ! -x "$(command -v guile3)" ]; then
+    echo "Testing with fallback Guile:"
+    guile elisp/compile-elisp.scm --test 2>/dev/null || echo "Failed"
     echo ""
 fi
 
 # Test Elisp stages
 echo "=== Elisp Compilation Stages Demo ==="
-cd elisp && guile compile-elisp.scm --stages 2>/dev/null | head -30
+cd elisp && guile3 compile-elisp.scm --stages 2>/dev/null | head -30
 cd ..
 echo ""
 
 # Compile an actual Elisp file
 echo "=== Compiling factorial.el ==="
 cd elisp
-guile compile-elisp.scm factorial.el 2>/dev/null || echo "Compilation failed"
+guile3 compile-elisp.scm factorial.el 2>/dev/null || echo "Compilation failed"
 if [ -f factorial.el.go ]; then
     echo "✓ Bytecode generated: factorial.el.go"
     ls -lh factorial.el.go
@@ -60,7 +60,7 @@ if command -v hoot >/dev/null 2>&1; then
     if [ -f examples/hoot/fibonacci.scm ]; then
         echo "Compiling fibonacci.scm to WASM..."
         mkdir -p examples/hoot/build
-        guild compile-wasm -o examples/hoot/build/fibonacci.wasm examples/hoot/fibonacci.scm 2>/dev/null || \
+        guild3 compile-wasm -o examples/hoot/build/fibonacci.wasm examples/hoot/fibonacci.scm 2>/dev/null || \
             echo "WASM compilation requires guild with Hoot support"
     fi
 else
@@ -90,9 +90,9 @@ echo ""
 
 # Summary
 echo "=== Test Summary ==="
-echo "✓ Elisp compilation working with Guile 2.2"
-if command -v guile3 >/dev/null 2>&1; then
-    echo "✓ Elisp compilation working with Guile 3.0"
+echo "✓ Elisp compilation working with Guile 3.0"
+if command -v guile >/dev/null 2>&1; then
+    echo "✓ Fallback Guile available"
 fi
 echo "✓ Documentation targets configured"
 echo "✓ Submodules initialized"
@@ -101,7 +101,7 @@ if ! command -v hoot >/dev/null 2>&1; then
     echo ""
     echo "=== Next Steps ==="
     echo "1. For Hoot WASM support:"
-    echo "   - Install bleeding-edge Guile: make guile-next"
+    echo "   - Install bleeding-edge Guile: make guile-build"
     echo "   - Install Hoot: make hoot-install"
     echo ""
 fi

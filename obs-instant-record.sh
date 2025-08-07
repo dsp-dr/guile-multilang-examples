@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# OBS Studio configuration for instant replay buffer
+
+echo "🎬 OBS Studio Instant Replay Setup"
+echo "=================================="
+echo ""
+echo "For GUI-based recording with instant replay:"
+echo ""
+echo "1. Install OBS Studio:"
+echo "   pkg install obs-studio"
+echo ""
+echo "2. Configure Replay Buffer:"
+echo "   • Settings → Output → Replay Buffer"
+echo "   • Enable Replay Buffer"
+echo "   • Set duration: 30 seconds"
+echo "   • Set hotkey: Option+R"
+echo ""
+echo "3. Start recording:"
+echo "   • Click 'Start Replay Buffer'"
+echo "   • Work normally"
+echo "   • Press Option+R to save last 30 seconds"
+echo ""
+echo "This provides high-quality video recording with minimal overhead."
