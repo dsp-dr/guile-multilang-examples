@@ -27,3 +27,4 @@ docs/*.sig
 Thumbs.db
 
 node.core
+.repomind-cache/
