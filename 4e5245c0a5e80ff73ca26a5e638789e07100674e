@@ -1,0 +1,26 @@
+Schism WebAssembly Integration
+
+This commit adds Schism, an experimental Scheme→WebAssembly compiler, as a submodule.
+Schism enables running Scheme code in browsers by compiling to WebAssembly.
+
+Key Features Integrated:
+- Self-hosting compiler (Schism is written in Scheme)
+- WebAssembly with experimental features (reference types, tail calls)
+- Subset of R6RS Scheme support
+- JavaScript runtime integration
+
+The wasm-multilang-bridge.scm example demonstrates:
+1. Compilation pipeline: Scheme → WebAssembly
+2. Elisp optimization analysis before compilation
+3. WASM feature detection (reference types, tail calls, GC)
+4. Brainfuck test pattern generation for validation
+5. JavaScript runtime bindings generation
+
+This extends our multilanguage compilation beyond Guile's targets to include
+WebAssembly, enabling browser-based execution of Scheme code.
+
+Future work could include:
+- Actual WASM binary generation
+- Integration with WebAssembly GC proposal
+- Multi-file compilation support
+- Macro system integration
